@@ -99,7 +99,9 @@ extension MediaViewerInteractivePopTransition: UIViewControllerInteractiveTransi
         
         // Back up
         sourceViewHiddenBackup = sourceView?.isHidden ?? false
-        tabBarScrollEdgeAppearanceBackup = tabBar?.scrollEdgeAppearance
+        if #available(iOS 15.0, *) {
+            tabBarScrollEdgeAppearanceBackup = tabBar?.scrollEdgeAppearance
+        }
         tabBarAlphaBackup = tabBar?.alpha
         toolbarHiddenBackup = navigationController.isToolbarHidden
         toolbarAlphaBackup = toolbar.alpha
@@ -114,11 +116,13 @@ extension MediaViewerInteractivePopTransition: UIViewControllerInteractiveTransi
         
         sourceView?.isHidden = true
         
-        if let tabBar {
-            // Make tabBar opaque during the transition
-            let appearance = UITabBarAppearance()
-            appearance.configureWithDefaultBackground()
-            tabBar.scrollEdgeAppearance = appearance
+        if #available(iOS 15.0, *) {
+            if let tabBar {
+                // Make tabBar opaque during the transition
+                let appearance = UITabBarAppearance()
+                appearance.configureWithDefaultBackground()
+                tabBar.scrollEdgeAppearance = appearance
+            }
         }
         
         /*
@@ -233,7 +237,9 @@ extension MediaViewerInteractivePopTransition: UIViewControllerInteractiveTransi
         let currentPageView = mediaViewerCurrentPageView(in: transitionContext)
         let currentPageImageView = currentPageView.imageView
         
-        tabBar?.scrollEdgeAppearance = tabBarScrollEdgeAppearanceBackup
+        if #available(iOS 15.0, *) {
+            tabBar?.scrollEdgeAppearance = tabBarScrollEdgeAppearanceBackup
+        }
         
         let finishAnimator = UIViewPropertyAnimator(duration: 0.35, dampingRatio: 1) {
             if let sourceView = self.sourceView {
@@ -269,7 +275,9 @@ extension MediaViewerInteractivePopTransition: UIViewControllerInteractiveTransi
             navigationBar.alpha = mediaViewer.navigationBarAlphaBackup
             navigationController.isToolbarHidden = mediaViewer.toolbarHiddenBackup
             toolbar.alpha = mediaViewer.toolbarAlphaBackup
-            toolbar.scrollEdgeAppearance = mediaViewer.toolbarScrollEdgeAppearanceBackup
+            if #available(iOS 15.0, *) {
+                toolbar.scrollEdgeAppearance = mediaViewer.toolbarScrollEdgeAppearanceBackup
+            }
             
             /*
              [Workaround]
@@ -325,8 +333,9 @@ extension MediaViewerInteractivePopTransition: UIViewControllerInteractiveTransi
             currentPageImageView.updateAnchorPointWithoutMoving(.init(x: 0.5, y: 0.5))
             currentPageImageView.transform = self.initialImageTransform
             currentPageView.restoreLayoutConfigurationAfterTransition()
-            
-            self.tabBar?.scrollEdgeAppearance = self.tabBarScrollEdgeAppearanceBackup
+            if #available(iOS 15.0, *) {
+                self.tabBar?.scrollEdgeAppearance = self.tabBarScrollEdgeAppearanceBackup
+            }
             if let tabBarAlphaBackup = self.tabBarAlphaBackup {
                 self.tabBar?.alpha = tabBarAlphaBackup
             }
@@ -334,7 +343,9 @@ extension MediaViewerInteractivePopTransition: UIViewControllerInteractiveTransi
             // Restore properties
             toVC.additionalSafeAreaInsets = self.toVCAdditionalSafeAreaInsetsBackup
             toVC.toolbarItems = self.toVCToolbarItemsBackup
-            toolbar.scrollEdgeAppearance = mediaViewer.toolbarScrollEdgeAppearanceBackup
+            if #available(iOS 15.0, *) {
+                toolbar.scrollEdgeAppearance = mediaViewer.toolbarScrollEdgeAppearanceBackup
+            }
             navigationController.isToolbarHidden = self.toolbarHiddenBackup
             
             let pageControlToolbar = mediaViewer.pageControlToolbar

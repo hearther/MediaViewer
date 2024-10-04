@@ -115,15 +115,29 @@ extension MediaViewerDataSource {
         let media = self.mediaViewer(mediaViewer, mediaWith: mediaIdentifier)
         switch media {
         case .image(.sync(let image)):
-            return .sync(
-                image?.preparingThumbnail(of: preferredThumbnailSize) ?? image
-            )
+            if #available(iOS 15.0, *) {
+                return .sync(
+                    image?.preparingThumbnail(of: preferredThumbnailSize) ?? image
+                )
+            } else {
+                return .sync(
+                    image
+                )
+            }
         case .image(.async(let transition, let imageProvider)):
-            return .async(transition: transition) {
-                let image = await imageProvider()
-                return await image?.byPreparingThumbnail(
-                    ofSize: preferredThumbnailSize
-                ) ?? image
+            if #available(iOS 15.0, *) {
+                return .async(transition: transition) {
+                    let image = await imageProvider()
+                    return await image?.byPreparingThumbnail(
+                        ofSize: preferredThumbnailSize
+                    ) ?? image
+                }
+            }
+            else {
+                return .async(transition: transition) {
+                    let image = await imageProvider()
+                    return image
+                }
             }
         }
     }
